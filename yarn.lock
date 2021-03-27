@@ -471,10 +471,10 @@
   resolved "https://registry.yarnpkg.com/@freik/core-utils/-/core-utils-0.10.0.tgz#8c483b4bf8dce369977748bef4fac03e0630e9d6"
   integrity sha512-mMkgPDADuqNhaU37hmyh2iiadaevg2nR8GN1EJXzA6mUz5XSbZ/ZzvnHmdU3oUDE16o37RPv37uhDVO1rM66sw==
 
-"@freik/core-utils@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@freik/core-utils/-/core-utils-0.13.0.tgz#43b1e334e78af1a8022e0d638228dea73a8de967"
-  integrity sha512-c6lPSD/WK5Y+EaVvR9107c0WJS5GFsDgXpnNHVdEq7MJ2pM8MpxBbJ3U6IdwrQyGoLbUHJBIEY+LWQKN/XvoMw==
+"@freik/core-utils@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@freik/core-utils/-/core-utils-0.14.0.tgz#8ddad20408bc72a15723e05938708487527500f2"
+  integrity sha512-OoxW28I1ztPAElZGUsM/DOwgYFhbNOgHD25cDVEZSwskDJvOFF3RhL7L/XNFwnbpDEz68mZV7/ypo2R7aD1AdQ==
 
 "@freik/node-utils@^0.6.0":
   version "0.6.0"

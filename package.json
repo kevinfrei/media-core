@@ -1,6 +1,6 @@
 {
   "name": "@freik/media-core",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Web and NodeJS compatible media stuff",
   "author": "Kevin Frei <kevinfrei@hotmail.com>",
   "license": "Unlicense",

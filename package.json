@@ -39,7 +39,7 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@freik/core-utils": "^0.12.0"
+    "@freik/core-utils": "^0.13.0"
   },
   "files": [
     "lib/**/*"

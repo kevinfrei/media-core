@@ -40,5 +40,8 @@
   },
   "dependencies": {
     "@freik/core-utils": "^0.12.0"
-  }
+  },
+  "files": [
+    "lib/**/*"
+  ]
 }

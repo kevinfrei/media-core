@@ -4,7 +4,7 @@ import {
   FullMetadata,
   AudioFileRegexPattern,
   SimpleMetadata,
-} from '.';
+} from './schema';
 
 // My "schema" for music that I use in other places:
 

@@ -1,7 +1,7 @@
-import * as Media from '../index';
+import { Media, Schema } from '../index';
 const log = false ? console.log : (a: unknown) => {};
 
-type Attributes = Media.Attributes;
+type Attributes = Schema.Attributes;
 
 it('Generic path', () => {
   const filename = 'something/artist - 1983 - album/01 - title.m4a';

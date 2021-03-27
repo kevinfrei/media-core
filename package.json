@@ -1,6 +1,6 @@
 {
   "name": "@freik/media-core",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Web and NodeJS compatible media stuff",
   "author": "Kevin Frei <kevinfrei@hotmail.com>",
   "license": "Unlicense",
@@ -39,7 +39,7 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@freik/core-utils": "^0.13.0"
+    "@freik/core-utils": "^0.14.0"
   },
   "files": [
     "lib/**/*"

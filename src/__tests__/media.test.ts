@@ -1,11 +1,10 @@
-import { Media, Schema } from '../index';
+import { Metadata } from '../index';
+import { Attributes } from '../index';
 const log = false ? console.log : (a: unknown) => {};
-
-type Attributes = Schema.Attributes;
 
 it('Generic path', () => {
   const filename = 'something/artist - 1983 - album/01 - title.m4a';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist',
     year: '1983',
@@ -14,7 +13,7 @@ it('Generic path', () => {
     title: 'title',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'artist',
@@ -27,7 +26,7 @@ it('Generic path', () => {
 
 it('Generic path with a disk number', () => {
   const filename = 'something/player - 1983 - record/1234 - name.m4a';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'player',
     year: '1983',
@@ -36,7 +35,7 @@ it('Generic path with a disk number', () => {
     title: 'name',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'player',
@@ -51,7 +50,7 @@ it('Generic path with a disk number', () => {
 it('Generic path, Two Primary artists', () => {
   const filename =
     'something/artist 1 & artist 2 - 1983 - album/01 - title.m4a';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist 1 & artist 2',
     year: '1983',
@@ -60,7 +59,7 @@ it('Generic path, Two Primary artists', () => {
     title: 'title',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: ['artist 1', 'artist 2'],
@@ -74,7 +73,7 @@ it('Generic path, Two Primary artists', () => {
 it('Generic path, Multiple Primary artists', () => {
   const filename =
     'something/artist 1, artist 2, artist 3 & artist 4 - 1983 - album/01 - title.m4a';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist 1, artist 2, artist 3 & artist 4',
     year: '1983',
@@ -83,7 +82,7 @@ it('Generic path, Multiple Primary artists', () => {
     title: 'title',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: ['artist 1', 'artist 2', 'artist 3', 'artist 4'],
@@ -96,7 +95,7 @@ it('Generic path, Multiple Primary artists', () => {
 
 it('Generic path, no year', () => {
   const filename = 'something/artist - album/01 - title.mp3';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist',
     album: 'album',
@@ -104,7 +103,7 @@ it('Generic path, no year', () => {
     title: 'title',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'artist',
@@ -117,7 +116,7 @@ it('Generic path, no year', () => {
 it('Generic path, other artist', () => {
   const filename =
     'something/artist - 1983 - album/02 - title [feat- Other Artist].aac';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist',
     year: '1983',
@@ -126,7 +125,7 @@ it('Generic path, other artist', () => {
     title: 'title [feat- Other Artist]',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'artist',
@@ -141,7 +140,7 @@ it('Generic path, other artist', () => {
 it('Generic path, 2 other artists', () => {
   const filename =
     'something/artist - 1983 - album/02 - title [feat- Other Artist 1 & Other Artist 2].aac';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist',
     year: '1983',
@@ -150,7 +149,7 @@ it('Generic path, 2 other artists', () => {
     title: 'title [feat- Other Artist 1 & Other Artist 2]',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'artist',
@@ -165,7 +164,7 @@ it('Generic path, 2 other artists', () => {
 it('Generic path, multiple other artists', () => {
   const filename =
     'something/artist - 1983 - album/02 - title [feat- Other Artist 1, Other Artist 2 & Other Artist 3].aac';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist',
     year: '1983',
@@ -174,7 +173,7 @@ it('Generic path, multiple other artists', () => {
     title: 'title [feat- Other Artist 1, Other Artist 2 & Other Artist 3]',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'artist',
@@ -189,7 +188,7 @@ it('Generic path, multiple other artists', () => {
 it('VA, other artist', () => {
   const filename =
     'something/VA - 1983 - album/02 - artist - title [with Other Artist].flac';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist',
     year: '1983',
@@ -199,7 +198,7 @@ it('VA, other artist', () => {
     title: 'title [with Other Artist]',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'artist',
@@ -215,7 +214,7 @@ it('VA, other artist', () => {
 it('Soundtrack, other artist', () => {
   const filename =
     'something/Soundtrack - 2001 - album/02 - artist - title [featuring Other Artist].m4a';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist',
     year: '2001',
@@ -225,7 +224,7 @@ it('Soundtrack, other artist', () => {
     title: 'title [featuring Other Artist]',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'artist',
@@ -241,7 +240,7 @@ it('Soundtrack, other artist', () => {
 it('variation', () => {
   const filename =
     'something/artist - 2001 - album/02 - title [live][goofy remix].m4a';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist',
     year: '2001',
@@ -250,7 +249,7 @@ it('variation', () => {
     title: 'title [live][goofy remix]',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'artist',
@@ -265,7 +264,7 @@ it('variation', () => {
 it('variation with additional artist', () => {
   const filename =
     'something/artist - 2001 - album/02 - title [live][goofy remix] [feat- foobar].m4a';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist',
     year: '2001',
@@ -274,7 +273,7 @@ it('variation with additional artist', () => {
     title: 'title [live][goofy remix] [feat- foobar]',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'artist',
@@ -290,7 +289,7 @@ it('variation with additional artist', () => {
 it('variation with additional artist and spaces', () => {
   const filename =
     'something/artist - 2001 - album/02 - title  [live]  [feat- foobar]  [goofy remix] .flac';
-  const md = Media.FromPath(filename);
+  const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist',
     year: '2001',
@@ -299,7 +298,7 @@ it('variation with additional artist and spaces', () => {
     title: 'title  [live]  [feat- foobar]  [goofy remix] ',
   });
   log(md);
-  const fmd = Media.FullFromObj(filename, (md as unknown) as Attributes);
+  const fmd = Metadata.FullFromObj(filename, (md as unknown) as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
     artist: 'artist',
@@ -314,12 +313,12 @@ it('variation with additional artist and spaces', () => {
 
 it('Artist Splitting', () => {
   const art1 = 'Artist #1 & Artist #2';
-  const spl1 = Media.SplitArtistString(art1);
+  const spl1 = Metadata.SplitArtistString(art1);
   expect(spl1).toEqual(['Artist #1', 'Artist #2']);
   const art2 = 'Artist 1, Artist 2 & Artist 3';
-  const spl2 = Media.SplitArtistString(art2);
+  const spl2 = Metadata.SplitArtistString(art2);
   expect(spl2).toEqual(['Artist 1', 'Artist 2', 'Artist 3']);
   const art3 = 'Artist 1, Artist 2';
-  const spl3 = Media.SplitArtistString(art3);
+  const spl3 = Metadata.SplitArtistString(art3);
   expect(spl3).toEqual([art3]);
 });

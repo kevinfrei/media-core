@@ -1,2 +1,2 @@
-export * as Schema from './schema';
-export * as Media from './media';
+export * from './schema';
+export * as Metadata from './media';

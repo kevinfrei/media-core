@@ -1,6 +1,7 @@
 export type SongKey = string;
 export type AlbumKey = string;
 export type ArtistKey = string;
+export type MediaKey = SongKey | ArtistKey | AlbumKey;
 export type PlaylistName = string;
 export type Playlist = SongKey[];
 
@@ -81,3 +82,15 @@ export type MimeData = {
   type: string;
   data: string;
 };
+
+export function isArtistKey(mediaKey: MediaKey): mediaKey is ArtistKey {
+  return mediaKey.startsWith('R');
+}
+
+export function isAlbumKey(mediaKey: MediaKey): mediaKey is AlbumKey {
+  return mediaKey.startsWith('L');
+}
+
+export function isSongKey(mediaKey: MediaKey): mediaKey is SongKey {
+  return mediaKey.startsWith('S');
+}

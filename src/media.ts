@@ -88,7 +88,7 @@ export function FromPath(pthnm: string): SimpleMetadata | void {
     } else if (pattern.compilation === true) {
       result.compilation = 'va';
     }
-    return (result as unknown) as SimpleMetadata;
+    return result as unknown as SimpleMetadata;
   };
 
   const theExtension: string = getExtension(pathname);
@@ -99,19 +99,21 @@ export function FromPath(pthnm: string): SimpleMetadata | void {
   for (const pattern of patterns) {
     const result = makeMetaDataFromRegex(pathname, pattern);
     if (result) {
-      return (result as unknown) as SimpleMetadata;
+      return result as unknown as SimpleMetadata;
     }
   }
 }
 
-const moreArtistsRE = /\[(?:(?:w-)|(?:feat-)|(?:with)|(?:featuring)) ([^\]]*)\]/i;
+const moreArtistsRE =
+  /\[(?:(?:w-)|(?:feat-)|(?:with)|(?:featuring)) ([^\]]*)\]/i;
 const variationRE = /\[([^\]]+)\]/;
 
 // This should pull the [w- Someone & Somebody else] from the title, and
 // stick it in the artists array
-function pullArtistsFromTitle(
-  title: string,
-): { title: string; artists?: string[] } {
+function pullArtistsFromTitle(title: string): {
+  title: string;
+  artists?: string[];
+} {
   const match = moreArtistsRE.exec(title);
   if (!match) {
     return { title: title.replace(/  +/g, ' ').trim() };
@@ -121,9 +123,10 @@ function pullArtistsFromTitle(
   return { title, artists };
 }
 
-function pullVariationsFromTitle(
-  title: string,
-): { title: string; variations?: string[] } {
+function pullVariationsFromTitle(title: string): {
+  title: string;
+  variations?: string[];
+} {
   let variations: string[] | undefined;
   let ttl = title;
   while (true) {

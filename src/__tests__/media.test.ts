@@ -1,5 +1,4 @@
-import { Metadata } from '../index';
-import { Attributes } from '../index';
+import { Attributes, Metadata } from '../index';
 const log = false ? console.log : (a: unknown) => {};
 
 it('Generic path', () => {
@@ -31,8 +30,9 @@ it('Generic path with a disk number', () => {
     artist: 'player',
     year: '1983',
     album: 'record',
-    track: '1234',
+    track: '34',
     title: 'name',
+    discNum: '12',
   });
   log(md);
   const fmd = Metadata.FullFromObj(filename, md as unknown as Attributes);

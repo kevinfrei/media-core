@@ -1,41 +1,45 @@
 import { Type } from '@freik/core-utils';
 import {
   Attributes,
-  FullMetadata,
   AudioFileRegexPattern,
+  FullMetadata,
   SimpleMetadata,
 } from './schema';
 
 // My "schema" for music that I use in other places:
 
 const patterns: AudioFileRegexPattern[] = [
+  // va - year - albumTitle/## - artist - track title.flac
   {
     compilation: 'va',
-    rgx: /^(?:.*\/)?(?:(?:va(?:rious artists)?)) - (\d+) - ([^\/]+)\/(\d+)(?: ?[-\.])? ([^\/]+) - ([^\/]+)$/i,
-    metadata: { year: 1, album: 2, track: 3, artist: 4, title: 5 },
+    rgx: /^(.*\/)?((va(rious artists)?)|(compilation)) - ((?<year>\d{4}) - )?(?<album>[^\/]+)\/(?<track>\d+)[-\. ]+(?<artist>[^\/]+) - (?<title>[^\/]+)$/i,
   },
+  // soundtrack - year - albumTitle/## - artist - track title.flac
+  {
+    compilation: 'ost',
+    rgx: /^(.*\/)?((ost)|(soundtrack)) - ((?<year>\d{4}) - )?(?<album>[^\/]+)\/(?<track>\d+)[-\. ]+(?<artist>[^\/]+) - (?<title>[^\/]+)$/i,
+  },
+  // artist - year - album/## - track title.flac
+  {
+    rgx: /^(.*\/)?(?<artist>[^\/]+) - (?<year>\d{4}) - (?<album>[^\/]+)\/(?<track>\d+)[-\. ]+(?<title>[^\/]+)$/i,
+  },
+  // artist - album/## - track title.flac
+  {
+    rgx: /^(.*\/)?(?<artist>[^\/]+) - (?<album>[^\/]+)\/(?<track>\d+)[-\. ]+(?<title>[^\/]+)$/i,
+  },
+  // va/year - albumTitle/CD # name/## - artist - track-title.flac
   {
     compilation: 'va',
-    rgx: /^(?:.*\/)?(?:(?:va(?:various artists)?)) - ([^\/]+)\/(\d+)(?: ?[-\.])? ([^\/]+) - ([^\/]+)$/i,
-    metadata: { album: 1, track: 2, artist: 3, title: 4 },
+    rgx: /^(.*\/)?((va(rious artists)?)|(compilation))\/((?<year>\d{4}) - )?(?<album>[^\/]+)(\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?)?\/(?<track>\d+)[-\. ]+(?<artist>[^\/]+) - (?<title>[^\/]+)$/i,
   },
+  // ost/year - albumTitle/CD # name/## - artist - track-title.flac
   {
     compilation: 'ost',
-    rgx: /^(?:.*\/)?(?:(?:ost)|(?:soundtrack)) - (\d+) - ([^\/]+)\/(\d+)(?: ?[-\.])? ([^\/]+) - ([^\/]+)$/i,
-    metadata: { year: 1, album: 2, track: 3, artist: 4, title: 5 },
+    rgx: /^(.*\/)?((ost)|(soundtrack))\/((?<year>\d{4}) - )?(?<album>[^\/]+)(\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?)?\/(?<track>\d+)[-\. ]+(?<artist>[^\/]+) - (?<title>[^\/]+)$/i,
   },
+  // artist/year - albumTitle/CD # name/## - track-title.flac
   {
-    compilation: 'ost',
-    rgx: /^(?:.*\/)?(?:(?:ost)|(?:soundtrack)) - ([^\/]+)\/(\d+)(?: [-\.])? ([^\/]+) - ([^\/]+)$/i,
-    metadata: { album: 1, track: 2, artist: 3, title: 4 },
-  },
-  {
-    rgx: /^(?:.*\/)?([^\/]+) - (\d+) - ([^\/]+)\/(\d+)(?: ?[-\.])? ([^\/]+)$/i,
-    metadata: { artist: 1, year: 2, album: 3, track: 4, title: 5 },
-  },
-  {
-    rgx: /^(?:.*\/)?([^\/]+) - ([^\/]+)\/(\d+)(?: ?[-\.])? ([^\/]+)$/i,
-    metadata: { artist: 1, album: 2, track: 3, title: 4 },
+    rgx: /^(.*\/)?(?<artist>[^\/]+)\/((?<year>\d{4}) - )?(?<album>[^\/]+)(\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?)?\/(?<track>\d+)[-\. ]+ (?<title>[^\/]+)$/i,
   },
 ];
 
@@ -48,48 +52,16 @@ function getExtension(pathname: string): string {
   }
 }
 
-export function AddPattern(
-  rgx: RegExp,
-  metadata: { [key: string]: number },
-  compilation?: boolean,
-): void {
+export function AddPattern(rgx: RegExp, compilation?: 'ost' | 'va'): void {
   if (compilation) {
-    patterns.push({ rgx, metadata, compilation: true });
+    patterns.push({ rgx, compilation });
   } else {
-    patterns.push({ rgx, metadata });
+    patterns.push({ rgx });
   }
 }
 
 export function FromPath(pthnm: string): SimpleMetadata | void {
   let pathname = pthnm.replace(/\\/g, '/');
-
-  // A little helper
-  const makeMetaDataFromRegex = (
-    pathnm: string,
-    pattern: AudioFileRegexPattern,
-  ): SimpleMetadata | void => {
-    if (!pattern.rgx.test(pathnm)) {
-      return;
-    }
-    const match = pattern.rgx.exec(pathnm);
-    if (!match) {
-      return;
-    }
-    const result: { [key: string]: string } = {};
-    // Comment syntax because otherwise it confuses syntax highlighting :/
-    for (const attr in pattern.metadata) {
-      if (Type.has(pattern.metadata, attr)) {
-        const index = pattern.metadata[attr];
-        result[attr] = match[index];
-      }
-    }
-    if (typeof pattern.compilation === 'string') {
-      result.compilation = pattern.compilation;
-    } else if (pattern.compilation === true) {
-      result.compilation = 'va';
-    }
-    return result as unknown as SimpleMetadata;
-  };
 
   const theExtension: string = getExtension(pathname);
   if (!theExtension || theExtension.length < 3) {
@@ -97,10 +69,36 @@ export function FromPath(pthnm: string): SimpleMetadata | void {
   }
   pathname = pathname.substr(0, pathname.length - 1 - theExtension.length);
   for (const pattern of patterns) {
-    const result = makeMetaDataFromRegex(pathname, pattern);
-    if (result) {
-      return result as unknown as SimpleMetadata;
+    if (!pattern.rgx.test(pathname)) {
+      continue;
     }
+    const match = pattern.rgx.exec(pathname);
+    if (!match) {
+      continue;
+    }
+    const result: { [key: string]: string } = {};
+    for (const attr in match.groups) {
+      if (Type.isString(attr) && Type.hasStr(match.groups, attr)) {
+        result[attr] = match.groups[attr];
+      }
+    }
+    if (Type.isString(pattern.compilation)) {
+      result.compilation = pattern.compilation;
+    }
+    // If we don't have an explicit disk number, and the track number is over
+    // 100, trim the track number and set the disk number
+    if (
+      Type.hasStr(match.groups, 'track') &&
+      !Type.hasStr(match.groups, 'discNum') &&
+      match.groups.track.length > 2
+    ) {
+      result.discNum = match.groups.track.substr(
+        0,
+        match.groups.track.length - 2,
+      );
+      result.track = match.groups.track.substr(result.discNum.length);
+    }
+    return result as unknown as SimpleMetadata; // TODO: Check this?
   }
 }
 
@@ -186,9 +184,14 @@ export function FullFromObj(
   res.artist = artistArray.length > 1 ? artistArray : theArtist;
   res.album = data.album;
   const track = Number.parseInt(data.track, 10);
-  res.track = track % 100;
-  if (res.track !== track) {
-    res.disk = Math.floor(track / 100);
+  if (Type.hasStr(data, 'discNum')) {
+    res.track = track;
+    res.disk = Number.parseInt(data.discNum, 10);
+  } else {
+    res.track = track % 100;
+    if (res.track !== track) {
+      res.disk = Math.floor(track / 100);
+    }
   }
   const { title: aTitle, artists } = pullArtistsFromTitle(data.title);
   res.moreArtists = artists;

@@ -46,6 +46,8 @@ export type SimpleMetadata = {
   year?: string;
   track: string;
   title: string;
+  discNum?: string;
+  discName?: string;
   compilation?: 'va' | 'ost';
 };
 
@@ -62,6 +64,7 @@ export type FullMetadata = {
   moreArtists?: string[];
   variations?: string[];
   disk?: number;
+  diskName?: string;
 };
 
 // This is a general mechanism for describing how to extract
@@ -70,12 +73,9 @@ export type AudioFileRegexPattern = {
   // This can be something like "soundtrack"
   // or "true/false" to simply indicate that it's
   // a compilation of works by various artists
-  compilation?: string | boolean;
+  compilation?: string;
   // This is the regular expression to match
   rgx: RegExp;
-  // These are the names of the metadata fields
-  // and their corresponding RegExp capture numbers
-  metadata: { [key: string]: number };
 };
 
 export type MimeData = {

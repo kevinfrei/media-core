@@ -9,37 +9,53 @@ import {
 // My "schema" for music that I use in other places:
 
 const patterns: AudioFileRegexPattern[] = [
-  // va - year - albumTitle/## - artist - track title.flac
+  // va - (year - )albumTitle/(disc #- disc name/)## - artist - track title.flac
   {
     compilation: 'va',
-    rgx: /^(.*\/)?((va(rious artists)?)|(compilation)) - ((?<year>\d{4}) - )?(?<album>[^\/]+)\/(?<track>\d+)[-\. ]+(?<artist>[^\/]+) - (?<title>[^\/]+)$/i,
+    rgx: /^(.*\/)?((va(rious artists)?)|(compilation)) - ((?<year>\d{4}) - )?(?<album>[^\/]+)(\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?)?\/(?<track>\d+)[-\. ]+(?<artist>[^\/]+) - (?<title>[^\/]+)$/i,
   },
-  // soundtrack - year - albumTitle/## - artist - track title.flac
+  // soundtrack - (year - )albumTitle/(disc #- disc name/)## - artist - track title.flac
   {
     compilation: 'ost',
-    rgx: /^(.*\/)?((ost)|(soundtrack)) - ((?<year>\d{4}) - )?(?<album>[^\/]+)\/(?<track>\d+)[-\. ]+(?<artist>[^\/]+) - (?<title>[^\/]+)$/i,
+    rgx: /^(.*\/)?((ost)|(soundtrack)) - ((?<year>\d{4}) - )?(?<album>[^\/]+)(\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?)?\/(?<track>\d+)[-\. ]+(?<artist>[^\/]+) - (?<title>[^\/]+)$/i,
   },
-  // artist - year - album/## - track title.flac
+  // artist - year - album/(disc #- disc name/)## - track title.flac
   {
-    rgx: /^(.*\/)?(?<artist>[^\/]+) - (?<year>\d{4}) - (?<album>[^\/]+)\/(?<track>\d+)[-\. ]+(?<title>[^\/]+)$/i,
+    rgx: /^(.*\/)?(?<artist>[^\/]+) - (?<year>\d{4}) - (?<album>[^\/]+)(\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?)?\/(?<track>\d+)[-\. ]+(?<title>[^\/]+)$/i,
   },
-  // artist - album/## - track title.flac
-  {
-    rgx: /^(.*\/)?(?<artist>[^\/]+) - (?<album>[^\/]+)\/(?<track>\d+)[-\. ]+(?<title>[^\/]+)$/i,
-  },
-  // va/year - albumTitle/CD # name/## - artist - track-title.flac
+  // va/(year - )albumTitle/(CD # name/)## - artist - track-title.flac
   {
     compilation: 'va',
     rgx: /^(.*\/)?((va(rious artists)?)|(compilation))\/((?<year>\d{4}) - )?(?<album>[^\/]+)(\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?)?\/(?<track>\d+)[-\. ]+(?<artist>[^\/]+) - (?<title>[^\/]+)$/i,
   },
-  // ost/year - albumTitle/CD # name/## - artist - track-title.flac
+  // ost/(year - )albumTitle/(CD # name/)## - artist - track-title.flac
   {
     compilation: 'ost',
     rgx: /^(.*\/)?((ost)|(soundtrack))\/((?<year>\d{4}) - )?(?<album>[^\/]+)(\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?)?\/(?<track>\d+)[-\. ]+(?<artist>[^\/]+) - (?<title>[^\/]+)$/i,
   },
   // artist/year - albumTitle/CD # name/## - track-title.flac
   {
-    rgx: /^(.*\/)?(?<artist>[^\/]+)\/((?<year>\d{4}) - )?(?<album>[^\/]+)(\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?)?\/(?<track>\d+)[-\. ]+ (?<title>[^\/]+)$/i,
+    rgx: /^(.*\/)?(?<artist>[^\/]+)\/(?<year>\d{4}) - (?<album>[^\/]+)\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?\/(?<track>\d+)[-\. ]+ (?<title>[^\/]+)$/i,
+  },
+  // artist/year - albumTitle/## - track-title.flac
+  {
+    rgx: /^(.*\/)?(?<artist>[^\/]+)\/(?<year>\d{4}) - (?<album>[^\/]+)\/(?<track>\d+)[-\. ]+ (?<title>[^\/]+)$/i,
+  },
+  // artist - album/CD # name/## - track title.flac
+  {
+    rgx: /^(.*\/)?(?<artist>[^\/]+) - (?<album>[^\/]+)\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?\/(?<track>\d+)[-\. ]+(?<title>[^\/]+)$/i,
+  },
+  // artist/albumTitle/CD # name/## - track-title.flac
+  {
+    rgx: /^(.*\/)?(?<artist>[^\/]+)\/(?<album>[^\/]+)\/(cd|dis[ck]) +(?<discNum>\d+)(-? +(?<discName>[^ \/][^\/]+))?\/(?<track>\d+)[-\. ]+ (?<title>[^\/]+)$/i,
+  },
+  // artist - album/## - track title.flac
+  {
+    rgx: /^(.*\/)?(?<artist>[^\/]+) - (?<album>[^\/]+)\/(?<track>\d+)[-\. ]+(?<title>[^\/]+)$/i,
+  },
+  // artist/albumTitle/## - track-title.flac
+  {
+    rgx: /^(.*\/)?(?<artist>[^\/]+)\/(?<album>[^\/]+)\/(?<track>\d+)[-\. ]+ (?<title>[^\/]+)$/i,
   },
 ];
 
@@ -219,6 +235,9 @@ export function FullFromObj(
     } else if (data.compilation === 'ost') {
       res.vaType = 'ost';
     }
+  }
+  if (Type.hasStr(data, 'discName')) {
+    res.diskName = data.discName;
   }
   return res;
 }

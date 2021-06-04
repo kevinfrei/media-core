@@ -29,6 +29,7 @@ export type Album = {
   vatype: '' | 'va' | 'ost';
   primaryArtists: ArtistKey[];
   songs: SongKey[];
+  diskNames?: string[];
 };
 
 export type MediaInfo = {

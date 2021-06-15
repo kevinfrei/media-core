@@ -15,6 +15,30 @@ export type Song = {
   variations?: string[];
 };
 
+export type SongObj = {
+  track: number;
+  title: string;
+  album: AlbumObj;
+  artists: ArtistObj[];
+  secondaryArtists: ArtistObj[];
+  variations?: string[];
+};
+
+export type ArtistObj = {
+  name: string;
+  albums: AlbumObj[];
+  songs: SongObj[];
+};
+
+export type AlbumObj = {
+  title: string;
+  year: number;
+  vatype: '' | 'va' | 'ost';
+  primaryArtists: ArtistObj[];
+  songs: SongObj[];
+  diskNames?: string[];
+};
+
 export type Artist = {
   key: ArtistKey;
   name: string;

@@ -4,8 +4,9 @@
   "description": "Web and NodeJS compatible media stuff",
   "author": "Kevin Frei <kevinfrei@hotmail.com>",
   "license": "Unlicense",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://kevinfrei/media-core.git"
@@ -13,7 +14,7 @@
   "scripts": {
     "test": "jest --config jestconfig.json",
     "watch": "jest --config jestconfig.json --watch",
-    "build": "rimraf lib && tsc && er minify -i lib",
+    "build": "rimraf lib && tsc && er makeModule ./lib/index.js",
     "prepare": "yarn build",
     "postinstall": "husky install",
     "prepublishOnly": "yarn test && yarn lint && pinst --disable",
@@ -43,6 +44,6 @@
     "@freik/core-utils": "^0.30.0"
   },
   "files": [
-    "lib/**/*"
+    "dist/**/*"
   ]
 }

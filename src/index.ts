@@ -1,2 +1,2 @@
-export * from './schema';
-export * as Metadata from './media';
+export * as Metadata from './media.js';
+export * from './schema.js';

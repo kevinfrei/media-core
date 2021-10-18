@@ -4,7 +4,7 @@ import {
   AudioFileRegexPattern,
   FullMetadata,
   SimpleMetadata,
-} from './schema';
+} from './schema.js';
 
 // My "schema" for music that I use in other places:
 

@@ -27,7 +27,7 @@
     "preversion": "yarn lint",
     "version": "yarn format && git add -A src",
     "postversion": "git push && git push --tags --no-verify",
-    "compile": "tsc --noEmit --config tsconfig.esm.json && tsc --config --noEmit tsconfig.cjs.json",
+    "compile": "tsc --noEmit --project tsconfig.esm.json && tsc --noEmit --project tsconfig.cjs.json",
     "chk": "yarn format && yarn lint && yarn compile && yarn test"
   },
   "devDependencies": {

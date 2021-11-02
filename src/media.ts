@@ -224,6 +224,7 @@ export function FullFromObj(
       res.moreArtists.push(data.artist);
     }
   }
+  /* istanbul ignore else */
   if (Type.hasStr(data, 'moreArtists') && res.moreArtists) {
     res.moreArtists = [...res.moreArtists, ...data.moreArtists];
   } else if (res.moreArtists && res.moreArtists.length === 0) {

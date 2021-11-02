@@ -1,4 +1,5 @@
 import { Attributes, Metadata } from '../index';
+import { isAlbumKey, isArtistKey, isSongKey } from '../schema';
 const log = false ? console.log : (a: unknown) => {};
 
 it('Generic path', () => {
@@ -986,4 +987,16 @@ it('Artist Splitting', () => {
   const art3 = 'Artist 1, Artist 2';
   const spl3 = Metadata.SplitArtistString(art3);
   expect(spl3).toEqual([art3]);
+});
+
+it('Simple schema tests', () => {
+  expect(isArtistKey('R123')).toBeTruthy();
+  expect(isArtistKey('L123')).toBeFalsy();
+  expect(isArtistKey('S123')).toBeFalsy();
+  expect(isAlbumKey('L123')).toBeTruthy();
+  expect(isAlbumKey('R123')).toBeFalsy();
+  expect(isAlbumKey('S123')).toBeFalsy();
+  expect(isSongKey('S123')).toBeTruthy();
+  expect(isSongKey('L123')).toBeFalsy();
+  expect(isSongKey('R123')).toBeFalsy();
 });

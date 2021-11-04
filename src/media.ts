@@ -1,4 +1,4 @@
-import { Type } from '@freik/core-utils';
+import { Type, TypeCheckPair } from '@freik/core-utils';
 import {
   Attributes,
   AudioFileRegexPattern,
@@ -61,19 +61,31 @@ const patterns: AudioFileRegexPattern[] = [
 
 function getExtension(pathname: string): string {
   const dot = pathname.lastIndexOf('.');
-  if (dot >= 0) {
-    return pathname.substr(dot + 1);
-  } else {
-    return '';
-  }
+  return dot >= 0 ? pathname.substr(dot + 1) : '';
 }
 
 export function AddPattern(rgx: RegExp, compilation?: 'ost' | 'va'): void {
-  if (compilation) {
-    patterns.push({ rgx, compilation });
-  } else {
-    patterns.push({ rgx });
-  }
+  patterns.push(compilation ? { rgx, compilation } : { rgx });
+}
+
+const allSimpleMetadataFields: TypeCheckPair[] = [
+  ['artist', Type.isString],
+  ['album', Type.isString],
+  ['title', Type.isString],
+  ['track', Type.isString],
+  ['year', Type.isString],
+  ['discNum', Type.isString],
+  ['discName', Type.isString],
+  ['compilation', (va: unknown) => va === 'va' || va === 'ost'],
+];
+const requiredSimpleMetadataFields = ['album', 'artist', 'title', 'track'];
+
+export function isSimpleMetadata(obj: unknown): obj is SimpleMetadata {
+  return Type.isSpecificType(
+    obj,
+    allSimpleMetadataFields,
+    requiredSimpleMetadataFields,
+  );
 }
 
 export function FromPath(pthnm: string): SimpleMetadata | void {
@@ -114,7 +126,9 @@ export function FromPath(pthnm: string): SimpleMetadata | void {
       );
       result.track = match.groups.track.substr(result.discNum.length);
     }
-    return result as unknown as SimpleMetadata; // TODO: Check this?
+    if (isSimpleMetadata(result)) {
+      return result;
+    }
   }
 }
 

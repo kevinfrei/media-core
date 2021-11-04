@@ -108,14 +108,14 @@ export type MimeData = {
   data: string;
 };
 
-export function isArtistKey(mediaKey: MediaKey): mediaKey is ArtistKey {
+export function isArtistKey(mediaKey: MediaKey): boolean {
   return mediaKey.startsWith('R');
 }
 
-export function isAlbumKey(mediaKey: MediaKey): mediaKey is AlbumKey {
+export function isAlbumKey(mediaKey: MediaKey): boolean {
   return mediaKey.startsWith('L');
 }
 
-export function isSongKey(mediaKey: MediaKey): mediaKey is SongKey {
+export function isSongKey(mediaKey: MediaKey): boolean {
   return mediaKey.startsWith('S');
 }

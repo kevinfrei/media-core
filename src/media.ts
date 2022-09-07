@@ -61,7 +61,7 @@ const patterns: AudioFileRegexPattern[] = [
 
 function getExtension(pathname: string): string {
   const dot = pathname.lastIndexOf('.');
-  return dot >= 0 ? pathname.substr(dot + 1) : '';
+  return dot >= 0 ? pathname.substring(dot + 1) : '';
 }
 
 export function AddPattern(rgx: RegExp, compilation?: 'ost' | 'va'): void {

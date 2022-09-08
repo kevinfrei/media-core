@@ -1,6 +1,6 @@
 {
   "name": "@freik/media-core",
-  "version": "0.10.7",
+  "version": "0.11.0",
   "description": "Web and NodeJS compatible media stuff",
   "author": "Kevin Frei <kevinfrei@hotmail.com>",
   "license": "Unlicense",
@@ -34,7 +34,7 @@
     "@freik/core-utils": ">=1.2.0"
   },
   "devDependencies": {
-    "@freik/build-tools": "^3.2.4",
+    "@freik/build-tools": ">=3.2.4",
     "@types/jest": "^28.1.8",
     "@typescript-eslint/eslint-plugin": "^5.36.2",
     "@typescript-eslint/parser": "^5.36.2",

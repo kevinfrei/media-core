@@ -34,11 +34,11 @@
     "@freik/core-utils": ">=1.2.0"
   },
   "devDependencies": {
-    "@freik/build-tools": ">=3.2.4",
+    "@freik/build-tools": "^3.4.2",
     "@types/jest": "^28.1.8",
-    "@typescript-eslint/eslint-plugin": "^5.36.2",
-    "@typescript-eslint/parser": "^5.36.2",
-    "eslint": "^8.23.0",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "eslint": "^8.26.0",
     "eslint-config-prettier": "^8.5.0",
     "husky": "^8.0.1",
     "jest": "^28.1.3",
@@ -46,7 +46,7 @@
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^28.0.8",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.4"
   },
   "files": [
     "lib/**/*"

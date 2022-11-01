@@ -92,15 +92,17 @@ export function FromPath(pthnm: string): SimpleMetadata | void {
   let pathname = pthnm.replace(/\\/g, '/');
 
   const theExtension: string = getExtension(pathname);
+  /* istanbul ignore if */
   if (!theExtension || theExtension.length < 3) {
     return;
   }
-  pathname = pathname.substr(0, pathname.length - 1 - theExtension.length);
+  pathname = pathname.substring(0, pathname.length - 1 - theExtension.length);
   for (const pattern of patterns) {
     if (!pattern.rgx.test(pathname)) {
       continue;
     }
     const match = pattern.rgx.exec(pathname);
+    /* istanbul ignore if */
     if (!match) {
       continue;
     }
@@ -240,7 +242,7 @@ export function FullFromObj(
   }
   /* istanbul ignore else */
   if (Type.hasStr(data, 'moreArtists') && res.moreArtists) {
-    res.moreArtists = [...res.moreArtists, ...data.moreArtists];
+    res.moreArtists = [...res.moreArtists, data.moreArtists];
   } else if (res.moreArtists && res.moreArtists.length === 0) {
     delete res.moreArtists;
   }

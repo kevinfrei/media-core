@@ -1,4 +1,5 @@
 import { Attributes, Metadata } from '../index';
+import { AddPattern } from '../media';
 import { isAlbumKey, isArtistKey, isSongKey } from '../schema';
 const log = false ? console.log : (a: unknown) => {};
 
@@ -50,16 +51,19 @@ it('Generic path with a disk number', () => {
 
 it('Generic path, Two Primary artists', () => {
   const filename =
-    'something/artist 1 & artist 2 - 1983 - album/01 - title.m4a';
+    'something/artist 1 & artist 2 - 1983 - album/101 - title.m4a';
   const md = Metadata.FromPath(filename);
   expect(md).toEqual({
     artist: 'artist 1 & artist 2',
     year: '1983',
     album: 'album',
     track: '01',
+    discNum: '1',
     title: 'title',
   });
   log(md);
+  delete (md as unknown as Attributes).discNum;
+  (md as unknown as Attributes).track = '101';
   const fmd = Metadata.FullFromObj(filename, md as unknown as Attributes);
   expect(fmd).toEqual({
     originalPath: filename,
@@ -67,6 +71,7 @@ it('Generic path, Two Primary artists', () => {
     year: 1983,
     album: 'album',
     track: 1,
+    disk: 1,
     title: 'title',
   });
 });
@@ -1000,3 +1005,50 @@ it('Simple schema tests', () => {
   expect(isSongKey('L123')).toBeFalsy();
   expect(isSongKey('R123')).toBeFalsy();
 });
+
+it('FullFromObj failure', () => {
+  const filename =
+    'something/artist 1 & artist 2 - 1983 - album/101 - title.m4a';
+  const md = Metadata.FromPath(filename);
+  delete (md as unknown as Attributes).album;
+  const fmd = Metadata.FullFromObj(filename, md as unknown as Attributes);
+  expect(fmd).toBeUndefined();
+});
+
+it('AlbumArtist vs moreArtists', () => {
+  const filename =
+    'something/artist 1 - 1983 - album/101 - title [w- artist 2].m4a';
+  const md = Metadata.FromPath(filename);
+  console.log(md);
+  (md as unknown as Attributes).moreArtists = 'artist 3';
+  (md as unknown as Attributes).albumArtist = 'artist 2';
+  const fmd = Metadata.FullFromObj(filename, md as unknown as Attributes);
+  expect(fmd).toEqual({
+    album: 'album',
+    artist: 'artist 2',
+    disk: 1,
+    originalPath: filename,
+    title: 'title',
+    track: 1,
+    year: 1983,
+    moreArtists: ['artist 2', 'artist 1', 'artist 3'],
+  });
+});
+
+it('AddPattern test', () => {
+  const filepath = '/artist-2022-album-23-title.flac';
+  const mdFail = Metadata.FromPath(filepath);
+  expect(mdFail).toBeUndefined();
+  AddPattern(
+    /^(.*\/)?(?<artist>[^\/]+)-(?<year>\d{4})-(?<album>[^\/]+)-(?<track>\d+)[-\. ]+(?<title>[^\/]+)$/i,
+  );
+  const mdSuccess = Metadata.FromPath(filepath);
+  expect(mdSuccess).toEqual({
+    album: 'album',
+    artist: 'artist',
+    year: '2022',
+    track: '23',
+    title: 'title',
+  });
+});
+// TODO: AddPattern,

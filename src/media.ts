@@ -1,4 +1,9 @@
-import { Type, TypeCheckPair } from '@freik/core-utils';
+import {
+  chkObjectOfType,
+  hasStrField,
+  isString,
+  typecheck,
+} from '@freik/typechk';
 import {
   Attributes,
   AudioFileRegexPattern,
@@ -61,6 +66,7 @@ const patterns: AudioFileRegexPattern[] = [
 
 function getExtension(pathname: string): string {
   const dot = pathname.lastIndexOf('.');
+  /* istanbul ignore next */
   return dot >= 0 ? pathname.substring(dot + 1) : '';
 }
 
@@ -68,25 +74,21 @@ export function AddPattern(rgx: RegExp, compilation?: 'ost' | 'va'): void {
   patterns.push(compilation ? { rgx, compilation } : { rgx });
 }
 
-const allSimpleMetadataFields: TypeCheckPair[] = [
-  ['artist', Type.isString],
-  ['album', Type.isString],
-  ['title', Type.isString],
-  ['track', Type.isString],
-  ['year', Type.isString],
-  ['discNum', Type.isString],
-  ['discName', Type.isString],
-  ['compilation', (va: unknown) => va === 'va' || va === 'ost'],
-];
-const requiredSimpleMetadataFields = ['album', 'artist', 'title', 'track'];
-
-export function isSimpleMetadata(obj: unknown): obj is SimpleMetadata {
-  return Type.isSpecificType(
-    obj,
-    allSimpleMetadataFields,
-    requiredSimpleMetadataFields,
+export const isSimpleMetadata: typecheck<SimpleMetadata> =
+  chkObjectOfType<SimpleMetadata>(
+    {
+      artist: isString,
+      album: isString,
+      title: isString,
+      track: isString,
+    },
+    {
+      year: isString,
+      discNum: isString,
+      discName: isString,
+      compilation: (va: unknown) => va === 'va' || va === 'ost',
+    },
   );
-}
 
 export function FromPath(pthnm: string): SimpleMetadata | void {
   let pathname = pthnm.replace(/\\/g, '/');
@@ -108,18 +110,18 @@ export function FromPath(pthnm: string): SimpleMetadata | void {
     }
     const result: { [key: string]: string } = {};
     for (const attr in match.groups) {
-      if (Type.isString(attr) && Type.hasStr(match.groups, attr)) {
+      if (isString(attr) && hasStrField(match.groups, attr)) {
         result[attr] = match.groups[attr];
       }
     }
-    if (Type.isString(pattern.compilation)) {
+    if (isString(pattern.compilation)) {
       result.compilation = pattern.compilation;
     }
     // If we don't have an explicit disk number, and the track number is over
     // 100, trim the track number and set the disk number
     if (
-      Type.hasStr(match.groups, 'track') &&
-      !Type.hasStr(match.groups, 'discNum') &&
+      hasStrField(match.groups, 'track') &&
+      !hasStrField(match.groups, 'discNum') &&
       match.groups.track.length > 2
     ) {
       result.discNum = match.groups.track.substr(
@@ -200,23 +202,24 @@ export function FullFromObj(
     disk?: number,
     variation?: string[]
     TODO: Deal with variations (mix, live, remix, demo, etc...)
-  */
+    */
+  /* istanbul ignore next */
   if (
-    !(Type.hasStr(data, 'artist') || Type.hasStr(data, 'albumArtist')) ||
-    !Type.hasStr(data, 'album') ||
-    !Type.hasStr(data, 'track') ||
-    !Type.hasStr(data, 'title')
+    !(hasStrField(data, 'artist') || hasStrField(data, 'albumArtist')) ||
+    !hasStrField(data, 'album') ||
+    !hasStrField(data, 'track') ||
+    !hasStrField(data, 'title')
   ) {
     return;
   }
-  const theArtist = Type.hasStr(data, 'albumArtist')
+  const theArtist = hasStrField(data, 'albumArtist')
     ? data.albumArtist
     : data.artist;
   const artistArray = SplitArtistString(theArtist);
   res.artist = artistArray.length > 1 ? artistArray : theArtist;
   res.album = data.album;
   const track = Number.parseInt(data.track, 10);
-  if (Type.hasStr(data, 'discNum')) {
+  if (hasStrField(data, 'discNum')) {
     res.track = track;
     res.disk = Number.parseInt(data.discNum, 10);
   } else {
@@ -232,28 +235,28 @@ export function FullFromObj(
   res.variations = variations;
 
   // Now add any additional data we've got
-  if (Type.hasStr(data, 'year')) {
+  if (hasStrField(data, 'year')) {
     res.year = Number.parseInt(data.year, 10);
   }
-  if (Type.hasStr(data, 'artist') && Type.hasStr(data, 'albumArtist')) {
+  if (hasStrField(data, 'artist') && hasStrField(data, 'albumArtist')) {
     if (data.artist !== data.albumArtist && res.moreArtists) {
       res.moreArtists.push(data.artist);
     }
   }
   /* istanbul ignore else */
-  if (Type.hasStr(data, 'moreArtists') && res.moreArtists) {
+  if (hasStrField(data, 'moreArtists') && res.moreArtists) {
     res.moreArtists = [...res.moreArtists, data.moreArtists];
   } else if (res.moreArtists && res.moreArtists.length === 0) {
     delete res.moreArtists;
   }
-  if (Type.hasStr(data, 'compilation')) {
+  if (hasStrField(data, 'compilation')) {
     if (data.compilation === 'va') {
       res.vaType = 'va';
     } else if (data.compilation === 'ost') {
       res.vaType = 'ost';
     }
   }
-  if (Type.hasStr(data, 'discName')) {
+  if (hasStrField(data, 'discName')) {
     res.diskName = data.discName;
   }
   return res;

@@ -1,6 +1,6 @@
 {
   "name": "@freik/media-core",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "description": "Web and NodeJS compatible media stuff",
   "author": "Kevin Frei <kevinfrei@hotmail.com>",
   "license": "Unlicense",
@@ -16,7 +16,7 @@
     "cleanbuild": "yarn clean && yarn build",
     "dbg": "yarn clean && tsc --sourceMap true --project tsconfig.cjs.json && tsc --sourceMap true --project tsconfig.esm.json",
     "prepare": "yarn cleanbuild",
-    "postinstall": "husky install",
+    "_postinstall": "husky install",
     "prepublishOnly": "yarn test && yarn lint && yarn pinst --disable",
     "postpublish": "yarn pinst --enable",
     "format": "ftool format",

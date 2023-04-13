@@ -1,6 +1,6 @@
 {
   "name": "@freik/media-core",
-  "version": "0.11.3",
+  "version": "0.11.4",
   "description": "Web and NodeJS compatible media stuff",
   "author": "Kevin Frei <kevinfrei@hotmail.com>",
   "license": "Unlicense",
@@ -11,12 +11,12 @@
   "scripts": {
     "test": "jest --config jestconfig.json",
     "watch": "jest --config jestconfig.json --watch",
-    "clean": "rimraf lib && rimraf \".*.tsbuildinfo\"",
+    "clean": "rimraf lib && rimraf .mjs.tsbuildinfo .cjs.tsbuildinfo",
     "build": "tsc --project tsconfig.cjs.json && tsc --project tsconfig.esm.json",
     "cleanbuild": "yarn clean && yarn build",
     "dbg": "yarn clean && tsc --sourceMap true --project tsconfig.cjs.json && tsc --sourceMap true --project tsconfig.esm.json",
     "prepare": "yarn cleanbuild",
-    "_postinstall": "husky install",
+    "postinstall": "husky install",
     "prepublishOnly": "yarn test && yarn lint && yarn pinst --disable",
     "postpublish": "yarn pinst --enable",
     "format": "ftool format",
@@ -33,17 +33,17 @@
   "devDependencies": {
     "@freik/build-tools": "^3.5.0",
     "@types/jest": "^29.5.0",
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
-    "@typescript-eslint/parser": "^5.57.1",
-    "eslint": "^8.37.0",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
     "husky": "^8.0.3",
     "jest": "^29.5.0",
     "pinst": "^3.0.0",
     "prettier": "^2.8.7",
-    "rimraf": "^4.4.1",
+    "rimraf": "^5.0.0",
     "ts-jest": "^29.1.0",
-    "typescript": "^5.0.3"
+    "typescript": "^5.0.4"
   },
   "files": [
     "lib/**/*"

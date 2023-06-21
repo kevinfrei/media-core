@@ -1,6 +1,6 @@
 {
   "name": "@freik/media-core",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "description": "Web and NodeJS compatible media stuff",
   "author": "Kevin Frei <kevinfrei@hotmail.com>",
   "license": "Unlicense",
@@ -37,7 +37,7 @@
     "chk": "yarn format && yarn lint && yarn compile && yarn test"
   },
   "dependencies": {
-    "@freik/typechk": "^0.2.1"
+    "@freik/typechk": "^0.3.1"
   },
   "devDependencies": {
     "@freik/build-tools": "^3.6.0",

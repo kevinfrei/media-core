@@ -1,9 +1,9 @@
 import {
   chkArrayOf,
-  chkBothOf,
   chkObjectOfType,
   chkOneOf,
   isArrayOfString,
+  isMapOfStrings,
   isNumber,
   isString,
 } from '@freik/typechk';
@@ -118,45 +118,93 @@ export type MimeData = {
   data: string;
 };
 
-export function isArtistKey(mediaKey: MediaKey): mediaKey is ArtistKey {
-  return mediaKey.startsWith('R');
+export function isArtistKey(mediaKey: unknown): mediaKey is ArtistKey {
+  return isString(mediaKey) && mediaKey.startsWith('R');
 }
 
-export function isAlbumKey(mediaKey: MediaKey): mediaKey is ArtistKey {
-  return mediaKey.startsWith('L');
+export function isAlbumKey(mediaKey: unknown): mediaKey is ArtistKey {
+  return isString(mediaKey) && mediaKey.startsWith('L');
 }
 
-export function isSongKey(mediaKey: MediaKey): mediaKey is ArtistKey {
-  return mediaKey.startsWith('S');
+export function isSongKey(mediaKey: unknown): mediaKey is ArtistKey {
+  return isString(mediaKey) && mediaKey.startsWith('S');
+}
+
+export const isPlaylist = chkArrayOf(isSongKey);
+
+export function isOnlyVaType(obj: unknown): obj is 'va' | 'ost' {
+  return obj === 'va' || obj === 'ost';
+}
+
+export function isVaType(obj: unknown): obj is 'va' | 'ost' | '' {
+  return obj === '' || isOnlyVaType(obj);
 }
 
 export const isSong = chkObjectOfType<Song>(
   {
-    key: chkBothOf(isString, isSongKey),
+    key: isSongKey,
     track: isNumber,
     title: isString,
-    albumId: chkBothOf(isString, isAlbumKey),
-    artistIds: chkArrayOf(chkBothOf(isString, isArtistKey)),
-    secondaryIds: chkArrayOf(chkBothOf(isString, isArtistKey)),
+    albumId: isAlbumKey,
+    artistIds: chkArrayOf(isArtistKey),
+    secondaryIds: chkArrayOf(isArtistKey),
   },
   { variations: isArrayOfString },
 );
 
 export const isArtist = chkObjectOfType<Artist>({
-  key: chkBothOf(isString, isArtistKey),
+  key: isArtistKey,
   name: isString,
-  albums: chkArrayOf(chkBothOf(isString, isAlbumKey)),
-  songs: chkArrayOf(chkBothOf(isString, isSongKey)),
+  albums: chkArrayOf(isAlbumKey),
+  songs: isPlaylist,
 });
 
 export const isAlbum = chkObjectOfType<Album>(
   {
-    key: chkBothOf(isString, isAlbumKey),
+    key: isAlbumKey,
     year: isNumber,
     title: isString,
-    vatype: chkBothOf(isString, chkOneOf('', chkOneOf('va', 'ost'))),
-    primaryArtists: chkArrayOf(chkBothOf(isString, isArtistKey)),
-    songs: chkArrayOf(chkBothOf(isString, isSongKey)),
+    vatype: isVaType,
+    primaryArtists: chkArrayOf(isArtistKey),
+    songs: isPlaylist,
   },
   { diskNames: isArrayOfString },
+);
+
+export const isMediaInfo = chkObjectOfType<MediaInfo>({
+  general: isMapOfStrings,
+  audio: isMapOfStrings,
+});
+
+export const isSimpleMetadata = chkObjectOfType<SimpleMetadata>(
+  {
+    artist: isString,
+    album: isString,
+    track: isString,
+    title: isString,
+  },
+  {
+    year: isString,
+    discNum: isString,
+    discName: isString,
+    compilation: isOnlyVaType,
+  },
+);
+
+export const isFullMetadata = chkObjectOfType<FullMetadata>(
+  {
+    originalPath: isString,
+    artist: chkOneOf(isArrayOfString, isString),
+    album: isString,
+    track: isNumber,
+    title: isString,
+  },
+  {
+    year: isNumber,
+    vaType: isOnlyVaType,
+    moreArtists: isArrayOfString,
+    variations: isArrayOfString,
+    disk: isNumber,
+    diskName: isString,
+  },
 );

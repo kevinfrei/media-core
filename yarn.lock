@@ -1847,7 +1847,7 @@ __metadata:
   resolution: "@freik/media-core@workspace:."
   dependencies:
     "@freik/build-tools": ^3.6.0
-    "@freik/typechk": ^0.2.1
+    "@freik/typechk": ^0.3.1
     "@types/jest": ^29.5.2
     "@typescript-eslint/eslint-plugin": ^5.60.0
     "@typescript-eslint/parser": ^5.60.0
@@ -1863,10 +1863,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@freik/typechk@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@freik/typechk@npm:0.2.1"
-  checksum: b0251b31e61166be44c05ca2202c08a16256b6b542d7a6d85cfbc82c39fcfefca9e48a5d3e77aa698dc1114d5f9be35e183e3667a59b37e2f039c7768c20db8c
+"@freik/typechk@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@freik/typechk@npm:0.3.1"
+  checksum: 369bfbf559eddd5c8dd78895ff809e06006f5330b71a5e02f5a15fe911a8820065b8031f4fd387c2b3ee9e3d4975a159b1abbd23694c0863fb1e0ab474bb8489
   languageName: node
   linkType: hard
 

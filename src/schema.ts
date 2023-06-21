@@ -1,3 +1,13 @@
+import {
+  chkArrayOf,
+  chkBothOf,
+  chkObjectOfType,
+  chkOneOf,
+  isArrayOfString,
+  isNumber,
+  isString,
+} from '@freik/typechk';
+
 export type SongKey = string;
 export type AlbumKey = string;
 export type ArtistKey = string;
@@ -108,14 +118,45 @@ export type MimeData = {
   data: string;
 };
 
-export function isArtistKey(mediaKey: MediaKey): boolean {
+export function isArtistKey(mediaKey: MediaKey): mediaKey is ArtistKey {
   return mediaKey.startsWith('R');
 }
 
-export function isAlbumKey(mediaKey: MediaKey): boolean {
+export function isAlbumKey(mediaKey: MediaKey): mediaKey is ArtistKey {
   return mediaKey.startsWith('L');
 }
 
-export function isSongKey(mediaKey: MediaKey): boolean {
+export function isSongKey(mediaKey: MediaKey): mediaKey is ArtistKey {
   return mediaKey.startsWith('S');
 }
+
+export const isSong = chkObjectOfType<Song>(
+  {
+    key: chkBothOf(isString, isSongKey),
+    track: isNumber,
+    title: isString,
+    albumId: chkBothOf(isString, isAlbumKey),
+    artistIds: chkArrayOf(chkBothOf(isString, isArtistKey)),
+    secondaryIds: chkArrayOf(chkBothOf(isString, isArtistKey)),
+  },
+  { variations: isArrayOfString },
+);
+
+export const isArtist = chkObjectOfType<Artist>({
+  key: chkBothOf(isString, isArtistKey),
+  name: isString,
+  albums: chkArrayOf(chkBothOf(isString, isAlbumKey)),
+  songs: chkArrayOf(chkBothOf(isString, isSongKey)),
+});
+
+export const isAlbum = chkObjectOfType<Album>(
+  {
+    key: chkBothOf(isString, isAlbumKey),
+    year: isNumber,
+    title: isString,
+    vatype: chkBothOf(isString, chkOneOf('', chkOneOf('va', 'ost'))),
+    primaryArtists: chkArrayOf(chkBothOf(isString, isArtistKey)),
+    songs: chkArrayOf(chkBothOf(isString, isSongKey)),
+  },
+  { diskNames: isArrayOfString },
+);

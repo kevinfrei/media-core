@@ -1,3 +1,3 @@
 # media-core
 
-Web + Node media tools: This is the core of my Typescript media tools, compatible with both web and node runtime environments.
+This has been moved to my [mono(ish) repo](https://github.com/kevinfrei/packages.git).
